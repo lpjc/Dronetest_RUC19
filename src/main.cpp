@@ -53,7 +53,7 @@ void setup()
             Serial.print(packet.localPort());
             Serial.print(", Length: ");
             Serial.print(packet.length());
-            Serial.print(", Data: ");
+            Serial.println(", Data: ");
             Serial.write(packet.data(), packet.length());
             Serial.println();
             //reply to the client
@@ -94,9 +94,10 @@ void loop()
             }   
         }
         lastButtonState = buttonState;
-        delay(50);
+        //delay(50);
     } 
     Serial.println(dronestate);
+    Serial.println();
 }
 
  
