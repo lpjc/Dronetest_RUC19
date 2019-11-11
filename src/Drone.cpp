@@ -18,6 +18,23 @@ using namespace std;
 
     }
 
+    String Drone::respond(){
+
+        udp.onPacket([](AsyncUDPPacket packet) { 
+
+            String s((char*)packet.data()); // laver string s ud af chars i packet.data()
+            s = s.substring(0, packet.length()); // klipper støj
+            s.trim(); //fjerner whitespace
+
+            Serial.println("HER ER DATA FRA DRONE: ");
+            Serial.println(s);
+
+            return s;
+                
+        });
+
+    }
+
     void sendMessage(String ip, int port, String message)   
     {
         udpSender.beginPacket(ip.c_str(), port);
@@ -70,9 +87,9 @@ using namespace std;
 
     // FIXED JUMPS / GO
 
-        void Drone::fixedGoM4()
+        void Drone::fixedGoM1()
         {
-            sendMessage(droneIP, udpPort, "go 0 0 100 50 m4");
+            sendMessage(droneIP, udpPort, "go 0 0 100 50 m1");
         }
 
         void Drone::fixedJumpM4M1()
