@@ -4,6 +4,9 @@
 #include "AsyncUDP.h"
 #include <string.h>
 #include <sstream>
+#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
+#include <LCD.h>
 
 const char * ssid = "TELLO-FE2F96"; 
 const char * password = "";
@@ -14,6 +17,11 @@ int buttonState = 0;
 int lastButtonState = 0;
 int currentPad = 0;
 int droneReady = 0;
+
+LCD myLCD(lcdc,lcdr); //columns and rows for the LCD screen
+
+int lcdc = 16;
+int lcdr = 2;
 
 String response;
 
@@ -28,6 +36,7 @@ Drone drone;
 
 void setup()
 {
+    myLCD.setupLCD();
     Serial.begin(9600);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -108,4 +117,4 @@ void loop()
     }
 }
 
- 
+
