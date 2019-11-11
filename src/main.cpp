@@ -3,26 +3,24 @@
 #include "WiFi.h"
 #include "AsyncUDP.h"
 #include <string.h>
+#include <sstream>
 
-const char * ssid = "TELLO-FE2F96";
+const char * ssid = "TELLO-FE2F96"; // SKAL DETTE MÅSKE VÆRE I VORES DRONE_CLASS?
 const char * password = "";
-const int udpPortMirror = 8890; // ændret navn da den ellers lavede ged i Drone class
- // TJEK OM DEN OVERSTÅENDE SKAL ÆNDRES TIL 8890 FOR AT LYTTE!
-const int buttonPin = 2; 
-// const String droneIP = "192.168.10.1"; INDE I DRONE CLASS NU      
+const int udpPortListen = 8889; // LYTTE PORT
+    
 int dronestate = 0;
 int buttonState = 0;  
 int lastButtonState = 0;
+int pot1Value = 0;
+int currentPad = 0;
+
+// PINS
+const int buttonPin = 2;  // TÆNDSLUK INPUT KNAP
+const int pot1Pin = 33; // Potentiometer1 Read
 
 AsyncUDP udp2; // ændret navn da den ellers lavede ged i Drone class
 Drone drone;
-
-// void sendMessage(String ip, int port, String message)
-// {
-//    udpSender.beginPacket(ip.c_str(), port);
-//    udpSender.printf(message.c_str());
-//    udpSender.endPacket();    
-// }
 
 void setup()
 {
@@ -35,49 +33,26 @@ void setup()
             delay(1000);
         }
     }
-    if(udp2.listen(udpPortMirror)) { // hvis connected wifi
+    if(udp2.listen(udpPortListen)) { // hvis connected wifi
         Serial.print("UDP Listening on IP: ");
         Serial.println(WiFi.localIP());
         // INSERT DRONE INITIALIZE HER
-        drone.begin();
-        udp2.onPacket([](AsyncUDPPacket packet) { // ON PACKET
-            Serial.print("UDP Packet Type: ");
-            Serial.print(packet.isBroadcast()?"Broadcast":packet.isMulticast()?"Multicast":"Unicast");
-            Serial.print(", From: ");
-            Serial.print(packet.remoteIP());
-            Serial.print(":");
-            Serial.print(packet.remotePort());
-            Serial.print(", To: ");
-            Serial.print(packet.localIP());
-            Serial.print(":");
-            Serial.print(packet.localPort());
-            Serial.print(", Length: ");
-            Serial.print(packet.length());
-            Serial.println(", Data: ");
-            Serial.write(packet.data(), packet.length());
-            Serial.println();
-            //reply to the client
-            packet.printf("Got %u bytes of data", packet.length());
+        drone.begin();  
+        udp2.onPacket([](AsyncUDPPacket packet) { 
 
-            // sendMessage(droneIP, udpPort, "command");
-            // is now from drone class as the "init" method
+            String s((char*)packet.data()); // laver string s ud af chars i packet.data()
+           // s = s.substring(0, packet.length()); // klipper støj
+           // s.trim(); //fjerner whitespace
 
-            // // make a string from the data
-            // String s((char*)packet.data());
-            // //packet.print(s.c_str());
-
-            // if (s.equals("who are you")) packet.print("I am your ESP32 :-)");
-
-            // //send reply
-            // // sendMessage(packet.remoteIP().toString(), udpPort, "reply from esp32");
+            Serial.println(s);
             
         });
     }
-
 }
 
 void loop()
 {
+
     buttonState = digitalRead(buttonPin);
 
      if (buttonState != lastButtonState) {
@@ -94,9 +69,27 @@ void loop()
             }   
         }
         lastButtonState = buttonState;
-        //delay(50);
+        delay(50);
     } 
-    Serial.println(dronestate);
+    pot1Value = map(analogRead(pot1Pin), 0, 2200, 200, 0); // HER SKAL DER NOGET MED pot1
+   // Serial.println("pot1Value: ");
+   // Serial.print(pot1Value);
+
+    if (pot1Value > 100 && currentPad < 1) { 
+        ++currentPad; 
+        drone.fixedGoM4();
+        delay(5000); // MILLIS ?!
+        drone.fixedJumpM4M1();
+        delay(5000);
+        Serial.println("CURRENT PAD: ");
+        Serial.print(currentPad);
+        // KAN VI LAVE ET SKALERBART LOOT?
+        // Således at det er i++ hele tiden tilsvarende næste missionpad
+    }
+    
+  //  Serial.println("dronestate: ");
+  //  Serial.print(dronestate);
+
 }
 
  
