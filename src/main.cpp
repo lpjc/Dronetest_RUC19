@@ -60,7 +60,7 @@ void setup()
 
 void loop()
 {
-    for (int i = 0; i < 5; i++){ // assigns maps our Potentiometer pin values into the potentiometer Array
+    for (int i = 0; i < 4; i++){ // assigns maps our Potentiometer pin values into the potentiometer Array
 
         potArr[i] = map(analogRead(potPinArr[i]), 0, 4095, 200, 0);
 
@@ -83,7 +83,7 @@ void loop()
         delay(50);
     } 
     
-    if (response = "ok"){
+    if (response == "ok"){
     
         droneReady = true;
     
@@ -91,13 +91,14 @@ void loop()
     
     Serial.println(response);
     
-    if ((dronestate = true) && (droneReady = true)) { // if the drone in the air?
+    if ((dronestate == true) && (droneReady == true)) { // if the drone in the air?
+
         for (int i; potArr[i] > 80; i++){
 
             droneReady = false;
             response = "not ready";
 
-            if (i = 0){ // første gang loopet kører skal vi have et Go statement.
+            if (i == 0){ // første gang loopet kører skal vi have et Go statement.
                 drone.fixedGoM1();
                 delay(5000);
             }
