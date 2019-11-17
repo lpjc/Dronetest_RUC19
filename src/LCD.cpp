@@ -3,7 +3,6 @@
 #include "AsyncUDP.h"
 #include <string.h>
 #include <wire.h>
-#include <LiquidCrystal.h>
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 using namespace std;
@@ -62,13 +61,17 @@ void LCD::setupLCD() {
 void LCD::liftOffText() {
   lcd.setCursor(0, 0);
   lcd.print("DRONE LIFT OFF!!");
-  delay(1000);
+  /* delay(1000);
   lcd.clear();
   lcd.setCursor(0,1);
   lcd.print("DRONE LIFT OFF!!");
   delay(1000);
-  lcd.clear(); 
+  lcd.clear(); */
 
+}
+void LCD::nextPot() {
+  lcd.setCursor(0, 0);
+  lcd.print("TURN NEXT POT!");
 }
 
 void LCD::missionPadOneText() {

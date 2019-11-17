@@ -30,6 +30,7 @@ using namespace std;
         sendMessage(droneIP, udpPort, "command");
         delay(500);
         sendMessage(droneIP, udpPort, "mon"); // turns on mission pad 
+        delay(500);
     }
 
     void Drone::liftOff()

@@ -16,6 +16,7 @@ class LCD
     void missionPadThreeText();
     void missionPadFourText();
     void missionPadEnd();
+    void nextPot();
 
     int lcdr;
     int lcdc;
